@@ -1,0 +1,40 @@
+# application-prod.yml (운영 환경)
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    driver-class-name: org.postgresql.Driver
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 30000
+      connection-timeout: 30000
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+# 운영용 AWS 설정
+aws:
+  region: ${AWS_REGION}
+  use-local-implementation: false
+
+# 운영 환경 로깅 설정
+logging:
+  level:
+    root: WARN
+    org.springframework.web: ERROR
+    org.hibernate: ERROR
+    com.k6loadtest: INFO
+  file:
+    name: /var/log/k6loadtest/application.log
+  logback:
+    rollingpolicy:
+      max-file-size: 10MB
+      max-history: 30

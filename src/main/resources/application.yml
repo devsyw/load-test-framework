@@ -1,0 +1,42 @@
+# application.yml (?? ??)
+spring:
+  profiles:
+    active: local
+  jpa:
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${KEYCLOAK_URL:http://localhost:8080}/realms/${KEYCLOAK_REALM:k6-loadtest}
+          jwk-set-uri: ${KEYCLOAK_URL:http://localhost:8080}/realms/${KEYCLOAK_REALM:k6-loadtest}/protocol/openid-connect/certs
+
+keycloak:
+  realm: ${KEYCLOAK_REALM:k6-loadtest}
+  auth-server-url: ${KEYCLOAK_URL:http://localhost:8080}
+  resource: ${KEYCLOAK_CLIENT_ID:k6-loadtest-client}
+  public-client: false
+  credentials:
+    secret: ${KEYCLOAK_CLIENT_SECRET:client-secret}
+  bearer-only: true
+
+aws:
+  region: ${AWS_REGION:us-east-1}
+  lambda:
+    function-name: ${LAMBDA_FUNCTION_NAME:k6-load-test-executor}
+  ecs:
+    cluster: ${ECS_CLUSTER:k6-load-test-cluster}
+    task-definition: ${ECS_TASK_DEFINITION:k6-load-test-task}
+    subnet-id: ${ECS_SUBNET_ID:subnet-12345}
+    security-group-id: ${ECS_SECURITY_GROUP_ID:sg-12345}
+  s3:
+    bucket-name: ${S3_BUCKET_NAME:k6-load-test-results}
+
+logging:
+  level:
+    org.springframework.web: INFO
+    org.hibernate.SQL: INFO
+    com.k6loadtest: INFO
